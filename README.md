@@ -396,6 +396,24 @@ python manage.py test chamados.tests -v 2
 - **WhiteNoise 6.11.0** - Servir arquivos estáticos
 - **Gunicorn 23.0.0** - Servidor WSGI
 
+## Imagens do Sistema
+### Tela Principal do Admin(admin)
+<img width="1067" height="476" alt="image" src="https://github.com/user-attachments/assets/52b185bb-6725-43bb-8560-e84d74d9febc" />
+### Tela de Criação de Usuário(admin)
+<img width="1067" height="1044" alt="image" src="https://github.com/user-attachments/assets/4856151a-565f-49f6-a820-8c16d71de6db" />
+### Tela de Gerenciar Usuários(admin)
+<img width="1075" height="745" alt="image" src="https://github.com/user-attachments/assets/67296afc-2cc7-459b-a361-232805b5c646" />
+### Tela de Chamado Finalizado(Todos)
+<img width="1072" height="1112" alt="image" src="https://github.com/user-attachments/assets/12bc8b6d-106d-4cdc-bf88-184b0be627cc" />
+### Tela de Perfil do Usuário(Todos)
+<img width="1067" height="437" alt="image" src="https://github.com/user-attachments/assets/fa107a35-7de6-4502-b266-25c52d5a09d8" />
+### Tela de Criação do Chamado(Gestor)
+<img width="1067" height="651" alt="image" src="https://github.com/user-attachments/assets/c695586c-b458-4403-8719-131e4c84b194" />
+### Tela para Atualizar os status do chamado(Tecnico)
+<img width="1074" height="1116" alt="image" src="https://github.com/user-attachments/assets/e3931a7c-37d0-4f00-9b2c-18ed6b9bc877" />
+### Tela de Finalizar Chamado(Gestor)
+<img width="1064" height="1017" alt="image" src="https://github.com/user-attachments/assets/499959d1-307a-4a74-9cec-44ff4183267c" />
+
 ## 📝 Notas Adicionais
 
 - ✅ Grupos (`Gestor`, `Administrador TI`, `Técnico`) são criados automaticamente via `post_migrate` signal
