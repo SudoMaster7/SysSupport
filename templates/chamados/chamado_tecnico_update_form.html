@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}Atualizar Status • Chamado #{{ object.id }}{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-3xl">
+    <div class="mb-6">
+        <h1 class="text-2xl font-semibold text-slate-800">Atualizar Status do Chamado</h1>
+        <p class="mt-1 text-sm text-slate-500">Chamado #{{ object.id }} - {{ object.titulo }}</p>
+    </div>
+
+    <!-- Informações do Chamado -->
+    <div class="mb-6 rounded-lg bg-slate-50 p-5">
+        <h2 class="mb-3 text-lg font-semibold text-slate-700">Informações do Chamado</h2>
+        <dl class="grid gap-3 text-sm">
+            <div class="flex justify-between">
+                <dt class="font-medium text-slate-500">Solicitante</dt>
+                <dd class="text-slate-700">{{ object.solicitante.get_full_name|default:object.solicitante.username }}</dd>
+            </div>
+            <div class="flex justify-between">
+                <dt class="font-medium text-slate-500">Unidade</dt>
+                <dd class="text-slate-700">{{ object.unidade.nome }}</dd>
+            </div>
+            <div class="flex justify-between">
+                <dt class="font-medium text-slate-500">Prioridade</dt>
+                <dd class="text-slate-700">{{ object.prioridade }}</dd>
+            </div>
+            <div class="flex justify-between">
+                <dt class="font-medium text-slate-500">Status Atual</dt>
+                <dd>
+                    {% if object.status == 'Aberta' %}
+                        <span class="rounded bg-yellow-100 px-2 py-1 text-xs font-semibold text-yellow-800">{{ object.status }}</span>
+                    {% elif object.status == 'Em Andamento' %}
+                        <span class="rounded bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-800">{{ object.status }}</span>
+                    {% elif object.status == 'Resolvida' %}
+                        <span class="rounded bg-green-100 px-2 py-1 text-xs font-semibold text-green-800">{{ object.status }}</span>
+                    {% else %}
+                        <span class="rounded bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-800">{{ object.status }}</span>
+                    {% endif %}
+                </dd>
+            </div>
+            <div class="flex justify-between">
+                <dt class="font-medium text-slate-500">Data de Abertura</dt>
+                <dd class="text-slate-700">{{ object.data_abertura|date:"d/m/Y H:i" }}</dd>
+            </div>
+        </dl>
+        <div class="mt-4">
+            <h3 class="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">Descrição</h3>
+            <p class="whitespace-pre-wrap text-sm text-slate-700">{{ object.descricao }}</p>
+        </div>
+    </div>
+
+    <!-- Formulário de Atualização -->
+    <div class="rounded-lg bg-white p-6 shadow">
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="rounded-md bg-red-50 p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fa-solid fa-circle-exclamation text-red-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-red-800">Erro ao atualizar o chamado</h3>
+                            <div class="mt-2 text-sm text-red-700">
+                                {{ form.non_field_errors }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Status -->
+            <div>
+                <label for="{{ form.status.id_for_label }}" class="block text-sm font-medium text-slate-700">
+                    Status <span class="text-red-600">*</span>
+                </label>
+                <div class="mt-1">
+                    {{ form.status }}
+                </div>
+                {% if form.status.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.status.errors.0 }}</p>
+                {% endif %}
+                <p class="mt-1 text-xs text-slate-500">
+                    Atualize o status conforme o andamento do atendimento. Marque como "Resolvida" quando concluir o trabalho.
+                </p>
+            </div>
+
+            <!-- Notas de Resolução -->
+            <div>
+                <label for="{{ form.notas_resolucao.id_for_label }}" class="block text-sm font-medium text-slate-700">
+                    Notas de Resolução
+                </label>
+                <div class="mt-1">
+                    {{ form.notas_resolucao }}
+                </div>
+                {% if form.notas_resolucao.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.notas_resolucao.errors.0 }}</p>
+                {% endif %}
+                <p class="mt-1 text-xs text-slate-500">
+                    Registre as ações realizadas, soluções aplicadas ou observações importantes sobre o atendimento.
+                </p>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="flex justify-end gap-3 pt-4">
+                <a href="{% url 'chamados:detalhe' object.pk %}" class="rounded border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                    Cancelar
+                </a>
+                <button type="submit" class="rounded bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500">
+                    <i class="fa-solid fa-save mr-1"></i> Salvar Alterações
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Dicas para Técnicos -->
+    <div class="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <i class="fa-solid fa-lightbulb text-blue-400"></i>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-blue-800">Dicas Importantes</h3>
+                <div class="mt-2 text-sm text-blue-700">
+                    <ul class="list-disc space-y-1 pl-5">
+                        <li>Ao marcar como <strong>"Em Andamento"</strong>, informe ao solicitante que o atendimento está sendo realizado.</li>
+                        <li>Ao marcar como <strong>"Resolvida"</strong>, descreva detalhadamente a solução aplicada nas notas de resolução.</li>
+                        <li>Após marcar como "Resolvida", o gestor responsável poderá avaliar e finalizar o chamado.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

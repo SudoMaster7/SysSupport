@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Novo Chamado • SysSupport{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-3xl rounded-lg bg-white p-6 shadow">
+    <h1 class="mb-4 text-xl font-semibold text-slate-800">Abrir Chamado</h1>
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            <div>
+                <label class="mb-1 block text-sm font-semibold text-slate-600" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<p class="mt-1 text-xs text-slate-500">{{ field.help_text }}</p>{% endif %}
+                {% for error in field.errors %}
+                    <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <div class="flex justify-end gap-3">
+            <a href="{% url 'chamados:lista' %}" class="rounded bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-300">Cancelar</a>
+            <button type="submit" class="rounded bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500">Salvar</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

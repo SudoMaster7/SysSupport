@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Confirmar Exclusão{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center mb-6">
+            <div class="flex-shrink-0">
+                <i class="fa-solid fa-exclamation-triangle text-red-600 text-4xl"></i>
+            </div>
+            <div class="ml-4">
+                <h1 class="text-3xl font-bold text-gray-800">Confirmar Exclusão</h1>
+                <p class="text-gray-600 mt-2">Esta ação não pode ser desfeita!</p>
+            </div>
+        </div>
+
+        <!-- Info do Usuário -->
+        <div class="mb-6 p-6 bg-red-50 rounded-lg border-l-4 border-red-500">
+            <div class="flex items-center">
+                <div class="flex-shrink-0 h-16 w-16">
+                    <div class="h-16 w-16 rounded-full bg-red-500 flex items-center justify-center text-white font-bold text-2xl">
+                        {{ user_to_delete.username.0|upper }}
+                    </div>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-lg font-semibold text-gray-900">{{ user_to_delete.username }}</h3>
+                    <p class="text-sm text-gray-700">{{ user_to_delete.get_full_name|default:"Nome não definido" }}</p>
+                    <p class="text-sm text-gray-600">{{ user_to_delete.email|default:"Email não definido" }}</p>
+                    {% if user_to_delete.profile.unidade %}
+                        <p class="text-sm text-gray-600">Unidade: {{ user_to_delete.profile.unidade.nome }}</p>
+                    {% endif %}
+                    {% for group in user_to_delete.groups.all %}
+                        <span class="inline-flex mt-2 px-2 py-1 text-xs leading-5 font-semibold rounded-full 
+                            {% if group.name == 'Gestor' %}bg-green-100 text-green-800
+                            {% elif group.name == 'Tecnico' %}bg-blue-100 text-blue-800
+                            {% elif group.name == 'Administrador TI' %}bg-purple-100 text-purple-800
+                            {% else %}bg-gray-100 text-gray-800{% endif %}">
+                            {{ group.name }}
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Avisos -->
+        <div class="mb-6 space-y-4">
+            <div class="p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fa-solid fa-exclamation-circle text-yellow-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-yellow-800">Atenção!</h3>
+                        <div class="mt-2 text-sm text-yellow-700">
+                            <p>Ao excluir este usuário:</p>
+                            <ul class="list-disc list-inside mt-2 space-y-1">
+                                <li>O usuário não poderá mais fazer login no sistema</li>
+                                <li>Todos os dados associados ao perfil serão removidos</li>
+                                <li>Os chamados criados por este usuário permanecerão no sistema</li>
+                                <li>Esta ação é permanente e não pode ser desfeita</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulário de Confirmação -->
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="mb-6">
+                <p class="text-gray-700 font-medium">Tem certeza que deseja excluir o usuário <strong class="text-red-600">{{ user_to_delete.username }}</strong>?</p>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="flex gap-4 justify-end pt-6 border-t">
+                <a href="{% url 'accounts:user-list' %}" class="px-6 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                    <i class="fa-solid fa-arrow-left"></i> Cancelar
+                </a>
+                <button type="submit" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                    <i class="fa-solid fa-trash"></i> Sim, Excluir Usuário
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

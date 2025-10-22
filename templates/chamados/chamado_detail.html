@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}Chamado {{ chamado.id }} • SysSupport{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" integrity="sha512-SsJQheAQ7Ez+KQEiC5EvhczHxVn9Yx8RJWb1x1o1t4bm/FvGV8eK3opgDdGztqKqRR3YKHyCuXapnwYfJOLLmQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js" integrity="sha512-xZwLSeX776BF3nf6/Dr7guPmyAnbcWcCYwiVdc+GqOR/mdrIW6DCeU44y7NysGEi2Sleqrs9jwELyhl725LL4g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl font-semibold text-slate-800">{{ chamado.titulo }}</h1>
+        <p class="text-sm text-slate-500">Aberto em {{ chamado.data_abertura|date:"d/m/Y H:i" }} por {{ chamado.solicitante.get_full_name|default:chamado.solicitante.username }}</p>
+    </div>
+    <div class="flex gap-3">
+        {% if is_admin_ti %}
+            <a href="{% url 'chamados:atualizar' chamado.pk %}" class="rounded bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500">Atualizar</a>
+        {% endif %}
+        {% if is_tecnico %}
+            <a href="{% url 'chamados:atualizar-status' chamado.pk %}" class="rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500"><i class="fa-solid fa-tasks mr-1"></i>Atualizar Status</a>
+        {% endif %}
+        {% if can_finalize %}
+            <a href="{% url 'chamados:finalizar' chamado.pk %}" class="rounded bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-500">Avaliar e Finalizar</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="grid gap-6 lg:grid-cols-2">
+    <section class="rounded-lg bg-white p-5 shadow">
+        <h2 class="mb-4 text-lg font-semibold text-slate-800">Informações Gerais</h2>
+        <dl class="grid gap-3 text-sm text-slate-700">
+            <div class="flex justify-between">
+                <dt class="font-medium text-slate-500">Status</dt>
+                <dd>{{ chamado.status }}</dd>
+            </div>
+            <div class="flex justify-between">
+                <dt class="font-medium text-slate-500">Prioridade</dt>
+                <dd>{{ chamado.prioridade }}</dd>
+            </div>
+            <div class="flex justify-between">
+                <dt class="font-medium text-slate-500">Unidade</dt>
+                <dd>{{ chamado.unidade.nome }}</dd>
+            </div>
+            <div class="flex justify-between">
+                <dt class="font-medium text-slate-500">Tempo de Espera</dt>
+                <dd>
+                    {% if chamado.data_fechamento %}
+                        {{ chamado.data_abertura|timesince:chamado.data_fechamento }}
+                    {% else %}
+                        {{ chamado.data_abertura|timesince }}
+                    {% endif %}
+                </dd>
+            </div>
+            {% if chamado.data_fechamento %}
+            <div class="flex justify-between">
+                <dt class="font-medium text-slate-500">Data de Fechamento</dt>
+                <dd>{{ chamado.data_fechamento|date:"d/m/Y H:i" }}</dd>
+            </div>
+            {% endif %}
+        </dl>
+        <div class="mt-4">
+            <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-500">Descrição</h3>
+            <p class="mt-2 whitespace-pre-wrap text-slate-700">{{ chamado.descricao }}</p>
+        </div>
+    </section>
+
+    <section class="rounded-lg bg-white p-5 shadow">
+        <h2 class="mb-4 text-lg font-semibold text-slate-800">Equipe Técnica</h2>
+        <ul class="list-disc space-y-2 pl-5 text-sm text-slate-700">
+            {% for tecnico in chamado.tecnicos_designados.all %}
+                <li>{{ tecnico.get_full_name|default:tecnico.username }}</li>
+            {% empty %}
+                <li class="text-slate-500">Nenhum técnico designado.</li>
+            {% endfor %}
+        </ul>
+        <div class="mt-4">
+            <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-500">Notas de Resolução</h3>
+            <p class="mt-2 whitespace-pre-wrap text-slate-700">{{ chamado.notas_resolucao|default:'—' }}</p>
+        </div>
+    </section>
+
+    <section class="rounded-lg bg-white p-5 shadow lg:col-span-2">
+        <h2 class="mb-4 text-lg font-semibold text-slate-800">Anexos</h2>
+        {% if chamado.memorando %}
+            <a href="{{ chamado.memorando.url }}" class="inline-flex items-center gap-2 rounded bg-slate-200 px-3 py-2 text-sm text-slate-700 hover:bg-slate-300" target="_blank" rel="noopener">
+                <i class="fa-solid fa-file"></i> Memorando
+            </a>
+        {% else %}
+            <p class="text-sm text-slate-500">Nenhum memorando anexado.</p>
+        {% endif %}
+    </section>
+
+    {% if chamado.status == 'Fechada' %}
+    <section class="rounded-lg bg-white p-5 shadow lg:col-span-2">
+        <h2 class="mb-4 text-lg font-semibold text-slate-800">Avaliação Final</h2>
+        <div class="grid gap-4 md:grid-cols-2">
+            <div>
+                <p class="text-sm font-medium">Avaliação</p>
+                <p class="text-2xl font-semibold text-yellow-500">{{ chamado.avaliacao_estrelas }} ⭐</p>
+            </div>
+            <div>
+                <p class="text-sm font-medium">Cliente Final</p>
+                <p class="text-base">{{ chamado.nome_cliente_final }} ({{ chamado.matricula_cliente_final }})</p>
+            </div>
+        </div>
+        <div class="mt-4">
+            <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-500">Observação</h3>
+            <p class="mt-2 whitespace-pre-wrap text-slate-700">{{ chamado.observacao_final|default:'—' }}</p>
+        </div>
+        {% if chamado.assinatura %}
+            <div class="mt-4">
+                <p class="text-sm font-semibold">Assinatura</p>
+                <a href="{{ chamado.assinatura.url }}" data-lightbox="assinatura" class="mt-2 inline-block">
+                    <img src="{{ chamado.assinatura.url }}" alt="Assinatura" class="max-h-48 border border-slate-200" />
+                </a>
+            </div>
+        {% endif %}
+    </section>
+    {% endif %}
+</div>
+{% endblock %}
