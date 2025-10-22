@@ -7,17 +7,53 @@
     const fontButtons = document.querySelectorAll('.font-toggle');
     const htmlEl = document.documentElement;
     const bodyEl = document.body;
-    bodyEl.classList.add('text-base');
+    // Garante que só uma classe de fonte fique ativa
+    function setFontSizeClass(size) {
+        bodyEl.classList.remove('text-xs', 'text-sm', 'text-base', 'text-lg', 'text-xl');
+        // Mais perceptível: xs, base, xl
+        if (size === 'sm') {
+            bodyEl.classList.add('text-xs');
+        } else if (size === 'base') {
+            bodyEl.classList.add('text-base');
+        } else if (size === 'lg') {
+            bodyEl.classList.add('text-xl');
+        }
+    }
+
+    setFontSizeClass('base');
 
     function applyTheme(theme) {
         if (!['light', 'dark'].includes(theme)) {
             theme = 'light';
         }
         htmlEl.setAttribute('data-theme', theme);
-        bodyEl.classList.toggle('bg-slate-100', theme === 'light');
-        bodyEl.classList.toggle('bg-slate-900', theme === 'dark');
-        bodyEl.classList.toggle('text-slate-900', theme === 'light');
-        bodyEl.classList.toggle('text-slate-100', theme === 'dark');
+        // Limpa classes antigas
+        bodyEl.classList.remove('bg-slate-100', 'bg-slate-900', 'text-slate-900', 'text-slate-100');
+        // Aplica tema
+        if (theme === 'light') {
+            bodyEl.classList.add('bg-slate-100', 'text-slate-900');
+        } else {
+            bodyEl.classList.add('bg-slate-900', 'text-slate-100');
+        }
+        // Ajusta contraste de elementos principais
+        document.querySelectorAll('.bg-white').forEach(el => {
+            if (theme === 'dark') {
+                el.classList.add('bg-slate-800');
+                el.classList.remove('bg-white');
+            } else {
+                el.classList.add('bg-white');
+                el.classList.remove('bg-slate-800');
+            }
+        });
+        document.querySelectorAll('.text-slate-800, .text-slate-700, .text-slate-600, .text-slate-500').forEach(el => {
+            if (theme === 'dark') {
+                el.classList.add('text-slate-100');
+                el.classList.remove('text-slate-800', 'text-slate-700', 'text-slate-600', 'text-slate-500');
+            } else {
+                el.classList.remove('text-slate-100');
+                // Não reverte para todos, mas mantém contraste
+            }
+        });
         localStorage.setItem(STORAGE_THEME_KEY, theme);
     }
 
@@ -34,8 +70,7 @@
         }
         const size = sizes[index];
         bodyEl.dataset.fontSize = size;
-        bodyEl.classList.remove('text-sm', 'text-base', 'text-lg');
-        bodyEl.classList.add(`text-${size}`);
+        setFontSizeClass(size);
         localStorage.setItem(STORAGE_FONT_KEY, size);
     }
 
@@ -80,6 +115,6 @@
     }
     if (storedFont) {
         bodyEl.dataset.fontSize = storedFont;
-        bodyEl.classList.add(`text-${storedFont}`);
+        setFontSizeClass(storedFont);
     }
 })();

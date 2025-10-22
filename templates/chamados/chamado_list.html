@@ -12,7 +12,7 @@
     {% endif %}
 </div>
 
-<form method="get" class="mb-6 grid gap-4 rounded-lg bg-white p-4 shadow md:grid-cols-4">
+<form method="get" class="mb-6 grid gap-4 rounded-lg bg-white p-4 shadow grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
     <div>
         <label for="status" class="mb-1 block text-xs font-semibold uppercase tracking-wide">Status</label>
         <select id="status" name="status" class="w-full rounded border border-slate-300 px-3 py-2 text-sm">
@@ -45,7 +45,7 @@
     </div>
 </form>
 
-<div class="overflow-hidden rounded-lg bg-white shadow">
+<div class="overflow-x-auto rounded-lg bg-white shadow">
     <table class="min-w-full divide-y divide-slate-200">
         <thead class="bg-slate-50">
             <tr class="text-left text-xs font-semibold uppercase tracking-wide text-slate-600">
