@@ -1,209 +1,441 @@
-# SysSupport
+# 🛠️ SysSupport
 
-SysSupport é uma aplicação web construída com Django para gerenciar o ciclo de vida de chamados de suporte de TI entre Gestores de Unidade, técnicos e a equipe administrativa de TI. O projeto inclui interface web responsiva (Tailwind CSS via CDN), API REST protegida com JWT, formulários com assinatura digital e controles de acessibilidade.
+![Django](https://img.shields.io/badge/Django-5.2.7-green?style=flat-square&logo=django)
+![Python](https://img.shields.io/badge/Python-3.13-blue?style=flat-square&logo=python)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
 
-## Funcionalidades principais
+SysSupport é um **sistema completo de gerenciamento de chamados de TI** construído com Django. Oferece controle total do ciclo de vida dos chamados entre Gestores, Técnicos e Administradores TI, com interface moderna e responsiva, API REST protegida com JWT, assinatura digital e recursos avançados de acessibilidade.
 
-- **Autenticação e perfis**: usa `django.contrib.auth` com perfis (`Profile`) associados a unidades. Grupos padrão (`Gestor`, `Administrador TI`, `Tecnico`) são criados automaticamente após as migrações.
-- **Gestão de usuários**: 
-  - Administradores TI podem criar novos usuários (Gestores e Técnicos) diretamente pela interface web.
-  - Novo botão "Novo Usuário" no menu superior (com ícone de usuário +).
-  - Formulário com validação de email e nome de usuário únicos.
-  - Atribuição automática de grupos e associação a unidades organizacionais.
-- **Gestão de chamados**:
-  - Gestores criam chamados vinculados à sua unidade e acompanham apenas os próprios registros.
-  - Administradores TI visualizam todos os chamados, atualizam status, atribuem técnicos e registram notas.
-  - Técnicos visualizam chamados atribuídos e podem atualizar o status para "Em Andamento" ou "Resolvida".
-  - Finalização com avaliação (1–5), observação opcional, identificação do cliente final e captura de assinatura em canvas.
-- **Uploads e mídia**: memorandos e assinaturas são armazenados em `MEDIA_ROOT` (`media/`).
-- **Painel web**: listagem com filtro por status/prioridade/unidade, detalhes do chamado e formulários (criação, atualização, finalização) com validação server-side.
-- **API REST**: endpoints baseados em Django REST Framework com autenticação via JWT (`/api/auth/login/`) e permissões por grupo.
-- **Acessibilidade**: botão flutuante para alternar tema claro/escuro e ajustar tamanho da fonte com persistência via `localStorage`.
+## ✨ Destaques
 
-## Deploy no Vercel
+- 🎨 **Interface moderna** com Tailwind CSS e responsividade total (mobile-first)
+- 🔐 **Autenticação robusta** com controle de permissões por grupos
+- 📱 **API REST completa** com autenticação JWT
+- ♿ **Acessibilidade** (tema claro/escuro, ajuste de fonte)
+- ✍️ **Assinatura digital** em canvas HTML5
+- 📊 **Dashboard** com filtros avançados e métricas
+- 🚀 **Pronto para produção** (PythonAnywhere, Vercel, Railway)
 
-### Pré-requisitos
-- Conta no [Vercel](https://vercel.com/)
-- [Vercel CLI](https://vercel.com/docs/cli) instalado (opcional)
-- Git instalado
+## 🎯 Funcionalidades Principais
 
-### Passos para Deploy
+### 👥 Gestão de Usuários
+- **Criação simplificada** de usuários (Gestores e Técnicos) por Administradores TI
+- **Botão "Novo Usuário"** acessível no menu superior
+- **Validação automática** de email e username únicos
+- **Atribuição inteligente** de grupos e unidades organizacionais
+- Perfis personalizados com matrícula e unidade
 
-1. **Inicialize o repositório Git (se ainda não tiver)**
+### 📋 Gestão de Chamados
+- **Gestores**: Criam e acompanham chamados da sua unidade
+- **Técnicos**: Visualizam chamados atribuídos e atualizam status (Em Andamento → Resolvida)
+- **Administradores TI**: Controle total (visualização global, atribuição de técnicos, atualização de notas)
+- **Finalização completa**: Avaliação por estrelas (1-5), observações, identificação do cliente final e assinatura digital
+
+### 🔍 Filtros e Busca
+- Filtro por **Status** (Aberta, Em Andamento, Resolvida, Fechada)
+- Filtro por **Prioridade** (Baixa, Média, Alta, Crítica)
+- Filtro por **Unidade Organizacional**
+- Tempo de espera calculado automaticamente
+
+### 📁 Uploads e Mídia
+- Upload de **memorandos** (documentos)
+- Captura de **assinatura digital** em canvas HTML5
+- Armazenamento seguro em `/media/`
+
+### 🎨 Interface e UX
+- **Design moderno** com Tailwind CSS
+- **Totalmente responsivo** (mobile, tablet, desktop)
+- **Tema claro/escuro** com persistência
+- **Ajuste de fonte** (pequena, normal, grande)
+- **Ícones Font Awesome** para melhor visualização
+
+### 🔌 API REST
+- **Autenticação JWT** (access/refresh tokens)
+- **Endpoints RESTful** completos para todas as operações
+- **Permissões granulares** por grupo de usuário
+- **Documentação** com Django REST Framework
+
+## 🌐 Deploy em Produção
+
+O SysSupport está pronto para deploy em diversas plataformas.
+
+### 🐍 PythonAnywhere (Recomendado - Gratuito)
+
+#### Passo a Passo Completo
+
+1. **Crie uma conta em [PythonAnywhere](https://www.pythonanywhere.com/)** (plano gratuito)
+
+2. **Abra um Bash Console** e clone o repositório:
    ```bash
-   git init
-   git add .
-   git commit -m "Initial commit"
+   git clone https://github.com/SudoMaster7/SysSupport.git
+   cd SysSupport
    ```
 
-2. **Faça push para GitHub/GitLab/Bitbucket**
+3. **Crie um ambiente virtual**:
    ```bash
-   git remote add origin <seu-repositorio>
-   git push -u origin main
+   mkvirtualenv --python=/usr/bin/python3.10 atendimentos-env
+   pip install -r requirements.txt
    ```
 
-3. **Configure variáveis de ambiente no Vercel**
-   - Acesse [vercel.com](https://vercel.com/)
-   - Importe seu repositório
-   - Vá em **Settings > Environment Variables**
-   - Adicione:
-     - `SECRET_KEY`: gere uma nova chave secreta segura
-     - `DEBUG`: defina como `False` para produção
-     - Outras variáveis necessárias
+4. **Configure o banco de dados MySQL** (na aba **Databases**):
+   - Crie um banco chamado `default`
+   - Anote: host, username, password
 
-4. **Deploy automático**
-   - O Vercel detectará automaticamente o projeto Django
-   - O build será executado usando `build_files.sh`
-   - A aplicação estará disponível em `seu-projeto.vercel.app`
+5. **Configure variáveis de ambiente** no console:
+   ```bash
+   export SECRET_KEY="sua-chave-secreta"
+   export DEBUG="False"
+   export DB_NAME="seu_usuario$default"
+   export DB_USER="seu_usuario"
+   export DB_PASSWORD="sua_senha_mysql"
+   export DB_HOST="seu_usuario.mysql.pythonanywhere-services.com"
+   export PYTHONANYWHERE_DOMAIN="seu_usuario.pythonanywhere.com"
+   ```
 
-### Deploy via CLI (alternativo)
+6. **Execute migrações e comandos**:
+   ```bash
+   python manage.py migrate
+   python manage.py create_groups
+   python manage.py update_unidades
+   python manage.py collectstatic --noinput
+   python manage.py createsuperuser
+   ```
+
+7. **Configure o WSGI** (aba **Web**):
+   - Edite o arquivo WSGI e use o conteúdo de `wsgi_pythonanywhere.py`
+   - Ajuste os caminhos para seu usuário
+
+8. **Configure arquivos de mídia** (aba **Web > Static files**):
+   - URL: `/media/`
+   - Directory: `/home/seu_usuario/SysSupport/media/`
+
+9. **Recarregue a aplicação** (botão **Reload**)
+
+10. **Acesse**: `seu_usuario.pythonanywhere.com` 🎉
+
+> 📚 **Guia detalhado**: Consulte `PASSO_A_PASSO_PYTHONANYWHERE.md`
+
+---
+
+### ▲ Vercel (Limitações para Django)
+
+⚠️ **Atenção**: Vercel tem limitações importantes:
+- ❌ SQLite não persiste (use PostgreSQL externo)
+- ❌ Sistema de arquivos efêmero (use Cloudinary/S3 para mídia)
+- ⚠️ Cold starts podem ser lentos
+
+#### Deploy Rápido
 
 ```bash
-# Instale o Vercel CLI
+# Instale Vercel CLI
 npm i -g vercel
 
 # Faça login
 vercel login
 
 # Deploy
-vercel
-
-# Deploy para produção
 vercel --prod
 ```
 
-### Notas importantes sobre Vercel
+#### Variáveis de Ambiente (Vercel Dashboard)
 
-⚠️ **ATENÇÃO**: O Vercel tem limitações para aplicações Django:
+- `SECRET_KEY`: Chave secreta Django
+- `DEBUG`: `False`
+- `DATABASE_URL`: URL do PostgreSQL externo
 
-1. **Banco de dados**: SQLite não persiste entre deploys. Use:
-   - PostgreSQL (Vercel Postgres, Supabase, Railway, etc.)
-   - MySQL/MariaDB hospedado externamente
+> 📚 **Guia completo**: Consulte `DEPLOY.md` e `QUICK_DEPLOY.md`
 
-2. **Arquivos de mídia**: O sistema de arquivos é efêmero. Configure:
-   - Cloudinary
-   - AWS S3
-   - Vercel Blob Storage
-   - Outro serviço de armazenamento em nuvem
+---
 
-3. **Sessões**: Configure para usar banco de dados ou cache Redis
+### 🚂 Outras Opções
 
-### Configuração recomendada para produção
+| Plataforma | Gratuito | Banco de Dados | Mídia | Dificuldade |
+|------------|----------|----------------|-------|-------------|
+| **PythonAnywhere** | ✅ Sim | MySQL incluído | ✅ Suportado | ⭐ Fácil |
+| **Railway** | 💳 $5 crédito | PostgreSQL | ✅ Suportado | ⭐⭐ Médio |
+| **Render** | ✅ Sim | PostgreSQL | ⚠️ Configurar | ⭐⭐ Médio |
+| **Heroku** | 💰 Pago | PostgreSQL | ⚠️ S3/Cloudinary | ⭐⭐⭐ Difícil |
+| **VPS (DigitalOcean, etc)** | 💰 Pago | Qualquer | ✅ Suportado | ⭐⭐⭐⭐ Muito difícil |
 
-Adicione ao `settings.py` (já configurado):
-- WhiteNoise para arquivos estáticos
-- Variáveis de ambiente para configurações sensíveis
-- ALLOWED_HOSTS configurado para `.vercel.app`
-
-## Estrutura de pastas (resumo)
+## 📁 Estrutura do Projeto
 
 ```
-accounts/        # Perfil de usuários e integrações com admin
-chamados/        # Domínio de chamados, API, formulários e testes
-sys_support/     # Configurações do projeto Django
-templates/       # Templates base, auth e páginas de chamados
-static/js/       # Scripts de acessibilidade e assinatura
-media/           # Diretório padrão para uploads (assinaturas, memorandos)
-vercel.json      # Configuração de deploy para Vercel
-build_files.sh   # Script de build para Vercel
+📦 SysSupport/
+├── 📂 accounts/              # Gestão de usuários, perfis e autenticação
+│   ├── forms.py              # Formulários de criação/edição de usuários
+│   ├── views.py              # Views de perfil e gestão
+│   ├── mixins.py             # Permissões customizadas
+│   └── management/commands/  # Comandos personalizados
+├── 📂 chamados/              # Core: chamados de TI
+│   ├── models.py             # Modelos (Chamado, Unidade)
+│   ├── forms.py              # Formulários de chamados
+│   ├── views.py              # Views web
+│   ├── api_views.py          # API REST
+│   ├── serializers.py        # Serialização DRF
+│   └── tests.py              # Testes unitários
+├── 📂 sys_support/           # Configurações do Django
+│   ├── settings.py           # Configurações principais
+│   ├── urls.py               # Roteamento principal
+│   └── wsgi.py               # WSGI para produção
+├── 📂 templates/             # Templates HTML
+│   ├── base.html             # Template base (menu, footer, acessibilidade)
+│   ├── chamados/             # Templates de chamados
+│   ├── accounts/             # Templates de usuários
+│   └── registration/         # Login
+├── 📂 static/                # Arquivos estáticos
+│   └── js/
+│       ├── accessibility.js  # Tema e fonte
+│       └── signature.js      # Captura de assinatura
+├── 📂 media/                 # Uploads (memorandos, assinaturas)
+├── 📄 requirements.txt       # Dependências Python
+├── 📄 manage.py              # CLI do Django
+├── 📄 vercel.json            # Config para Vercel
+└── 📄 README.md              # Este arquivo
 ```
 
-## Pré-requisitos
+## 🚀 Instalação e Configuração Local
 
-- Python 3.13 (virtualenv configurado em `.venv/`)
-- Pip
+### Pré-requisitos
+- Python 3.10+ (recomendado: 3.13)
+- pip (gerenciador de pacotes Python)
+- Git
 
-## Configuração Local
+### Passo a Passo
 
-1. **Instale as dependências**
-
-   ```powershell
-   .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+1. **Clone o repositório**
+   ```bash
+   git clone https://github.com/SudoMaster7/SysSupport.git
+   cd SysSupport
    ```
 
-2. **Aplique as migrações**
-
+2. **Crie e ative o ambiente virtual**
    ```powershell
-   .\.venv\Scripts\python.exe manage.py migrate
+   # Windows PowerShell
+   python -m venv .venv
+   .\.venv\Scripts\Activate.ps1
+   
+   # Linux/Mac
+   python3 -m venv .venv
+   source .venv/bin/activate
    ```
 
-3. **Crie grupos e unidades**
-
-   ```powershell
-   .\.venv\Scripts\python.exe manage.py create_groups
-   .\.venv\Scripts\python.exe manage.py update_unidades
+3. **Instale as dependências**
+   ```bash
+   pip install -r requirements.txt
    ```
 
-4. **Crie um superusuário**
-
-   ```powershell
-   .\.venv\Scripts\python.exe manage.py createsuperuser
+4. **Configure variáveis de ambiente** (opcional para desenvolvimento)
+   ```bash
+   # Crie um arquivo .env na raiz do projeto
+   SECRET_KEY=sua-chave-secreta-aqui
+   DEBUG=True
    ```
 
-5. **Execute o servidor de desenvolvimento**
-
-   ```powershell
-   .\.venv\Scripts\python.exe manage.py runserver
+5. **Execute as migrações**
+   ```bash
+   python manage.py migrate
    ```
 
-A aplicação estará disponível em `http://127.0.0.1:8000/`.
+6. **Crie grupos e unidades organizacionais**
+   ```bash
+   python manage.py create_groups
+   python manage.py update_unidades
+   ```
 
-## Criando Novos Usuários
+7. **Crie um superusuário (Administrador TI)**
+   ```bash
+   python manage.py createsuperuser
+   ```
 
-### Via Interface Web (Recomendado)
-1. Faça login como **Administrador TI**
-2. Clique no botão **"Novo Usuário"** (ícone de usuário com +) no canto superior direito da página
-3. Preencha o formulário com as seguintes informações:
-   - **Dados de Login**: Nome de usuário, e-mail e senha (com confirmação)
-   - **Dados Pessoais**: Nome e sobrenome
-   - **Dados Organizacionais**: Matrícula (opcional) e Unidade
-   - **Perfil (Grupo)**: Selecione "Gestor" ou "Técnico"
-4. Clique em "Criar Usuário"
-5. A página confirmará a criação e voltará ao formulário para criar mais usuários se necessário
+8. **Inicie o servidor de desenvolvimento**
+   ```bash
+   python manage.py runserver
+   ```
 
-### Via Django Admin
+9. **Acesse a aplicação**
+   - 🌐 Interface Web: `http://127.0.0.1:8000/`
+   - 🔧 Admin Django: `http://127.0.0.1:8000/admin/`
+   - 🔌 API: `http://127.0.0.1:8000/api/`
+
+## 👤 Criando Novos Usuários
+
+### 🖥️ Via Interface Web (Recomendado)
+
+1. **Faça login** como **Administrador TI**
+2. Clique no botão **"Novo Usuário"** (ícone 👤➕) no menu superior
+3. **Preencha o formulário**:
+   - 🔑 **Login**: Nome de usuário, e-mail e senha (com confirmação)
+   - 👤 **Dados Pessoais**: Nome e sobrenome
+   - 🏢 **Organização**: Matrícula (opcional) e Unidade
+   - 🔖 **Perfil**: Selecione "Gestor" ou "Técnico"
+4. Clique em **"Criar Usuário"**
+5. ✅ Confirmação e retorno ao formulário para novos cadastros
+
+### ⚙️ Via Django Admin
+
 1. Acesse `/admin/` com credenciais de superusuário
-2. Em **Autenticação e Autorização > Usuários**, clique em **Adicionar usuário**
-3. Configure nome de usuário e senha
-4. Na página de edição, configure grupos (Gestor, Técnico, ou Administrador TI)
-5. No inline **Profiles**, configure matrícula e unidade
+2. Em **Autenticação > Usuários**, clique em **Adicionar**
+3. Configure **username** e **senha**
+4. Atribua **grupos** (Gestor, Técnico ou Administrador TI)
+5. Configure **perfil** (matrícula e unidade) no inline
 
-### Validações e Restrições
-- Nomes de usuário devem ser únicos
-- E-mails devem ser únicos
-- Senhas devem ser diferentes
-- Matrícula é opcional, mas unidade é obrigatória
-- Apenas Administradores TI podem criar novos usuários
+### ✔️ Validações Automáticas
 
-## API REST
+- ✅ Nomes de usuário **únicos**
+- ✅ E-mails **únicos**
+- ✅ Senhas **diferentes** (confirmação obrigatória)
+- ✅ Matrícula opcional, **unidade obrigatória**
+- 🔒 Apenas **Administradores TI** podem criar usuários
 
-Use autenticação JWT (SimpleJWT):
+## 🔌 API REST
 
-- `POST /api/auth/login/` – obtém `access` e `refresh` tokens
-- `POST /api/auth/refresh/` – renova o token de acesso
+A API utiliza **Django REST Framework** com autenticação **JWT (JSON Web Tokens)**.
 
-Endpoints principais:
+### 🔐 Autenticação
 
-- `POST /api/chamados/` (Gestor) – cria chamado
-- `GET /api/chamados/` – lista chamados (filtrados por permissões)
-- `GET /api/chamados/{id}/` – detalha chamado
-- `PATCH /api/chamados/{id}/atualizar/` (Admin TI) – atualiza status, notas e designações
-- `POST /api/chamados/{id}/finalizar/` (Gestor solicitante) – encerra chamado com avaliação e assinatura
-- `GET/POST /api/unidades/` (Admin TI) – gerencia unidades
-- `GET/POST /api/users/` (Admin TI) – gerencia usuários e grupos
+```bash
+# Obter tokens (access + refresh)
+POST /api/auth/login/
+{
+  "username": "seu_usuario",
+  "password": "sua_senha"
+}
 
-## Testes
+# Resposta
+{
+  "access": "eyJ0eXAiOiJKV1QiLC...",
+  "refresh": "eyJ0eXAiOiJKV1QiLC..."
+}
 
-O projeto inclui testes unitários focados no fluxo de chamados (criação, atualização e finalização). Execute-os com:
-
-```powershell
-.\.venv\Scripts\python.exe manage.py test chamados.tests
+# Renovar token de acesso
+POST /api/auth/refresh/
+{
+  "refresh": "eyJ0eXAiOiJKV1QiLC..."
+}
 ```
 
-## Notas adicionais
+### 📡 Endpoints Principais
 
-- Os grupos `Gestor`, `Administrador TI` e `Tecnico` são criados automaticamente ao aplicar migrações (`post_migrate`).
-- Para capturar assinaturas na web, a página de finalização usa `signature_pad` (CDN) e envia os dados em base64; o backend converte e salva como imagem.
-- Ajuste `ALLOWED_HOSTS` no `settings.py` para o ambiente de produção apropriado.
-- Caso utilize deploy em produção, configure armazenamento seguro para arquivos, HTTPS e proteção de uploads (antivírus, limitação de tamanho, etc.).
+| Método | Endpoint | Permissão | Descrição |
+|--------|----------|-----------|-----------|
+| `GET` | `/api/chamados/` | Todos | Lista chamados (filtrado por permissões) |
+| `POST` | `/api/chamados/` | Gestor | Cria novo chamado |
+| `GET` | `/api/chamados/{id}/` | Relacionados | Detalhes do chamado |
+| `PATCH` | `/api/chamados/{id}/atualizar/` | Admin TI | Atualiza status, notas e técnicos |
+| `POST` | `/api/chamados/{id}/finalizar/` | Gestor solicitante | Finaliza com avaliação |
+| `GET` | `/api/unidades/` | Admin TI | Lista unidades |
+| `POST` | `/api/unidades/` | Admin TI | Cria unidade |
+| `GET` | `/api/users/` | Admin TI | Lista usuários |
+| `POST` | `/api/users/` | Admin TI | Cria usuário |
+
+### 💡 Exemplo de Uso
+
+```bash
+# 1. Fazer login
+curl -X POST http://localhost:8000/api/auth/login/ \
+  -H "Content-Type: application/json" \
+  -d '{"username": "admin", "password": "senha123"}'
+
+# 2. Listar chamados (usando o token)
+curl -X GET http://localhost:8000/api/chamados/ \
+  -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLC..."
+
+# 3. Criar chamado
+curl -X POST http://localhost:8000/api/chamados/ \
+  -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLC..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "titulo": "Computador não liga",
+    "descricao": "Máquina da sala 10 não está funcionando",
+    "prioridade": "Alta",
+    "unidade": 1
+  }'
+```
+
+## 🧪 Testes
+
+O projeto inclui **testes unitários completos** para o fluxo de chamados.
+
+### Executar Todos os Testes
+
+```bash
+python manage.py test chamados.tests
+```
+
+### Executar com Verbosidade
+
+```bash
+python manage.py test chamados.tests -v 2
+```
+
+### Cobertura de Testes
+
+- ✅ Criação de chamados
+- ✅ Atualização de status por técnicos
+- ✅ Finalização com avaliação
+- ✅ Permissões por grupo de usuário
+- ✅ Validações de formulários
+- ✅ API REST (endpoints protegidos)
+
+## 🛠️ Tecnologias Utilizadas
+
+### Backend
+- **Django 5.2.7** - Framework web Python
+- **Django REST Framework 3.16.1** - API REST
+- **djangorestframework-simplejwt 5.4.0** - Autenticação JWT
+- **Pillow 11.1.0** - Processamento de imagens
+- **mysqlclient 2.2.7** - Conector MySQL
+
+### Frontend
+- **Tailwind CSS 3.4** (via CDN) - Framework CSS
+- **Font Awesome 6.6.0** - Ícones
+- **Lightbox2** - Visualização de imagens
+- **Signature Pad** - Captura de assinatura
+
+### Deploy
+- **WhiteNoise 6.11.0** - Servir arquivos estáticos
+- **Gunicorn 23.0.0** - Servidor WSGI
+
+## 📝 Notas Adicionais
+
+- ✅ Grupos (`Gestor`, `Administrador TI`, `Técnico`) são criados automaticamente via `post_migrate` signal
+- ✅ 62+ unidades organizacionais pré-cadastradas via comando `update_unidades`
+- ✅ Assinaturas são capturadas em canvas HTML5 e salvas como PNG via base64
+- ✅ Tema escuro e ajuste de fonte persistem via `localStorage`
+- ⚠️ Em produção, configure:
+  - HTTPS obrigatório
+  - Armazenamento seguro para uploads
+  - Backup regular do banco de dados
+  - Limitação de tamanho de uploads
+  - Verificação antivírus para arquivos
+
+## 🤝 Contribuindo
+
+Contribuições são bem-vindas! Siga os passos:
+
+1. **Fork** o projeto
+2. Crie uma **branch** para sua feature (`git checkout -b feature/MinhaFeature`)
+3. **Commit** suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
+4. **Push** para a branch (`git push origin feature/MinhaFeature`)
+5. Abra um **Pull Request**
+
+## 📄 Licença
+
+Este projeto está sob a licença **MIT**. Veja o arquivo `LICENSE` para mais detalhes.
+
+## 👨‍💻 Autor
+
+**Leonardo Brito**
+- GitHub: [@SudoMaster7](https://github.com/SudoMaster7)
+- Projeto: [SysSupport](https://github.com/SudoMaster7/SysSupport)
+
+---
+
+<div align="center">
+
+**Feito com ❤️ usando Django**
+
+⭐ **Se este projeto foi útil, deixe uma estrela!** ⭐
+
+</div>
 ```}```}
